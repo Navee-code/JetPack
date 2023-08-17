@@ -3,6 +3,7 @@ package com.example.jetpack
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,12 +24,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.jetpack.ui.theme.JetPackTheme
 
 class MainActivity : ComponentActivity() {
@@ -41,24 +45,58 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                  //  Greeting("Android")
-//                    EditableTextField()
-//                    ButtonField()
-                    LazyColum()
+                    ConstraintLayoutWithButtonAndEditText()
 
+//
                 }
             }
         }
     }
 }
+
+@Composable
+fun ConstraintLayoutWithButtonAndEditText() {
+    ConstraintLayout(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        val (button, editText) = createRefs()
+
+        Button(
+            onClick = {  },
+            modifier = Modifier.constrainAs(button) {
+
+                top.linkTo(parent.top, margin = 16.dp)
+                start.linkTo(parent.start, margin = 16.dp)
+                end.linkTo(parent.end, margin = 16.dp)
+            }
+        ) {
+            
+        }
+
+        val editTextValue = TextFieldValue("")
+
+        Text(
+            text = "naven"
+,
+            modifier = Modifier.constrainAs(editText) {
+                top.linkTo(button.bottom, margin = 16.dp)
+                start.linkTo(parent.start, margin = 16.dp)
+                end.linkTo(parent.end, margin = 16.dp)
+            }
+        )
+    }
+}
+
 @Composable
 fun ButtonField(modifier: Modifier = Modifier) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter
+        contentAlignment = Alignment.Center
     ) {
-       Button(onClick = {  }) {
+       Button(onClick = {  }, enabled = true
+
+       ) {
 
            
        }
@@ -71,14 +109,20 @@ fun LazyColum() {
     LazyColumn {
         repeat(10000) { index ->
             item {
-                Text(
-                    text = "Item $index",
-                    fontSize = 30.sp,
-                    color = Color.Blue,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().padding(16.dp)
+                Box( modifier = Modifier
+                    .fillMaxSize(),
+                    contentAlignment = Alignment.Center) {
+                    Text(
+                        text = "Value $index",
+                        fontSize = 30.sp,
+                        color = Color.Blue,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
 
-                )
+                    )
+                }
 
             }
         }
@@ -105,8 +149,7 @@ fun EditableTextField( modifier: Modifier = Modifier) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
-        contentAlignment = Alignment.TopCenter.also {
-
+        contentAlignment = Alignment.Center.also {
         }
     ) {
         TextField(
@@ -121,13 +164,11 @@ fun EditableTextField( modifier: Modifier = Modifier) {
     }
 
 }
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     JetPackTheme {
-        Greeting("Android")
-        EditableTextField()
-        ButtonField()
-        LazyColum()
+        ConstraintLayoutWithButtonAndEditText()
     }
 }
