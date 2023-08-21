@@ -1,9 +1,11 @@
 package com.example.jetpack
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,36 +36,64 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.Dimension
 import com.example.jetpack.ui.theme.JetPackTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            JetPackTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    ConstraintLayoutWithButtonAndEditText()
+            loginView()
 
-//
-                }
-            }
+
         }
     }
+
 }
 
+        @Composable
+        private fun loginView() {
+            val constraint = ConstraintSet {
+                val greenBox =createRefFor("greeen")
+                val redBox = createRefFor("red")
+                constrain(greenBox){
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    width= Dimension.value(100.dp)
+                    height= Dimension.value(100.dp)
+                }
+                constrain(redBox){
+                    top.linkTo(parent.top)
+                    start.linkTo(greenBox.end, margin = 15.dp)
+
+                    width= Dimension.value(100.dp)
+                    height= Dimension.value(100.dp)
+                }
+
+            }
+            ConstraintLayout(constraint, modifier = Modifier.fillMaxSize()) {
+                Box(modifier = Modifier
+                    .background(Color.Blue)
+                    .layoutId("greeen"))
+                Box(modifier = Modifier
+                    .background(Color.Red)
+                    .layoutId("red"))
+
+
+            }
+
+         }
+
 @Composable
-fun ConstraintLayoutWithButtonAndEditText() {
+fun ConstraintLayoutWithButtonAndEditText(user:(status:String)->Unit) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
     ) {
         val (button, editText) = createRefs()
 
         Button(
-            onClick = {  },
+            onClick = { user("") },
             modifier = Modifier.constrainAs(button) {
 
                 top.linkTo(parent.top, margin = 16.dp)
@@ -169,6 +200,7 @@ fun EditableTextField( modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     JetPackTheme {
-        ConstraintLayoutWithButtonAndEditText()
+
+        ConstraintLayoutWithButtonAndEditText{}
     }
 }
